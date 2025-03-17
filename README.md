@@ -10,6 +10,7 @@ HabitHub is a sleek, user-friendly mobile application designed to help users bui
 - **Reminders**: Customizable reminders for each habit to help you stay on track
 - **Customization**: Personalize the app with different themes (light/dark/system) and accent colors
 - **User Accounts**: Sign in to sync your habits across devices and never lose your progress
+- **Cross-Platform**: Works on iOS, Android, and now as a web application!
 
 ## Screenshots
 
@@ -24,6 +25,8 @@ HabitHub is a sleek, user-friendly mobile application designed to help users bui
 - **Charts**: react-native-chart-kit
 - **Icons**: Ionicons from @expo/vector-icons
 - **Date Handling**: date-fns
+- **Web Support**: React Native Web
+- **Deployment**: Vercel (web), Expo Application Services (mobile)
 
 ## Getting Started
 
@@ -31,7 +34,9 @@ HabitHub is a sleek, user-friendly mobile application designed to help users bui
 
 - Node.js (v14 or later)
 - npm or yarn
-- Expo CLI
+- Expo CLI (`npm install -g expo-cli`)
+- Xcode (for iOS development, macOS only)
+- Android Studio (for Android development)
 
 ### Installation
 
@@ -45,27 +50,68 @@ HabitHub is a sleek, user-friendly mobile application designed to help users bui
    ```
    npm install
    ```
-   or
-   ```
-   yarn install
-   ```
 
 3. Start the development server:
    ```
-   npm start
-   ```
-   or
-   ```
-   yarn start
+   npx expo start
    ```
 
-4. Open the app on your device using the Expo Go app or run it on an emulator.
+4. Choose your development platform:
+   - Press `i` to open in iOS simulator (requires Xcode)
+   - Press `a` to open in Android emulator (requires Android Studio)
+   - Press `w` to open in web browser
+   - Scan the QR code with Expo Go app on your physical device
+
+## Running on Web
+
+HabitHub now includes web support! To run the web version:
+
+1. Make sure you have the web dependencies installed:
+   ```
+   npx expo install react-dom react-native-web @expo/metro-runtime
+   ```
+
+2. Start the web development server:
+   ```
+   npx expo start --web
+   ```
 
 ## Firebase Setup
 
 1. Create a Firebase project at [firebase.google.com](https://firebase.google.com)
 2. Enable Authentication and Firestore services
-3. Update the Firebase configuration in `src/services/firebase.ts` with your project credentials
+3. Create a `.env` file in the project root with your Firebase configuration:
+   ```
+   API_KEY=your-api-key
+   AUTH_DOMAIN=your-auth-domain
+   PROJECT_ID=your-project-id
+   STORAGE_BUCKET=your-storage-bucket
+   MESSAGING_SENDER_ID=your-sender-id
+   APP_ID=your-app-id
+   ```
+4. If you don't want to use Firebase, you can remove the Firebase dependencies and use local storage instead.
+
+## Deploying to Vercel
+
+HabitHub can be easily deployed to Vercel to share with friends:
+
+1. Push your code to a GitHub repository
+2. Create a `vercel.json` file in your project root:
+   ```json
+   {
+     "buildCommand": "npx expo export:web",
+     "outputDirectory": "web-build",
+     "devCommand": "npx expo start --web",
+     "framework": "expo",
+     "rewrites": [
+       { "source": "/(.*)", "destination": "/" }
+     ]
+   }
+   ```
+3. Sign up for a Vercel account at [vercel.com](https://vercel.com)
+4. Import your GitHub repository in the Vercel dashboard
+5. Let Vercel deploy your app (it will detect the Expo framework automatically)
+6. Share the generated URL with your friends!
 
 ## Project Structure
 
@@ -82,8 +128,56 @@ habithub/
 │   ├── utils/              # Utility functions
 │   └── types/              # TypeScript type definitions
 ├── App.tsx                 # Main app component
-└── app.json                # Expo configuration
+├── app.json                # Expo configuration
+└── vercel.json             # Vercel deployment configuration
 ```
+
+## Troubleshooting
+
+### Common Issues
+
+- **TypeScript Errors**: If you encounter TypeScript errors, make sure your `tsconfig.json` is correctly set up:
+  ```json
+  {
+    "compilerOptions": {
+      "strict": true,
+      "baseUrl": ".",
+      "paths": {
+        "*": ["*", "src/*"]
+      },
+      "skipLibCheck": true,
+      "resolveJsonModule": true,
+      "jsx": "react-native",
+      "noImplicitAny": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "forceConsistentCasingInFileNames": true,
+      "moduleResolution": "node",
+      "lib": [
+        "es6",
+        "dom"
+      ],
+      "target": "esnext"
+    },
+    "include": [
+      "**/*.ts",
+      "**/*.tsx"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+  }
+  ```
+
+- **iOS/Xcode Issues**: If Expo doesn't recognize your Xcode installation, run:
+  ```
+  sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+  ```
+
+- **Web Dependencies**: If the web version doesn't work, make sure you've installed the required dependencies:
+  ```
+  npx expo install react-dom react-native-web @expo/metro-runtime
+  ```
 
 ## Contributing
 
@@ -99,3 +193,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [React Native](https://reactnative.dev/)
 - [Firebase](https://firebase.google.com/)
 - [React Navigation](https://reactnavigation.org/)
+- [Vercel](https://vercel.com/) for web deployment
